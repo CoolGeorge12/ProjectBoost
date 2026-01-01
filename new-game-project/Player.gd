@@ -18,13 +18,13 @@ func _process(delta: float) -> void:
 
 func _on_body_entered(body: Node) -> void:
 	if "Goal" in body.get_groups():
-		complete_level()
+		complete_level(body.file_path)
 	
 	if "Hazard" in body.get_groups():
 		crash_sequence()
 
 func crash_sequence() -> void:
-	get_tree().reload_current_scene.call_deferred()
+	get_tree().call_deferred("reload_current_scene")
 
-func complete_level() -> void:
-	get_tree().quit()
+func complete_level(next_level_file: String) -> void:
+	get_tree().call_deferred("change_scene_to_file", next_level_file)
