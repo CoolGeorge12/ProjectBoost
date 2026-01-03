@@ -9,17 +9,41 @@ var is_transitioning: bool = false
 
 @onready var explosion_audio: AudioStreamPlayer = $ExplosionAudio
 @onready var success_audio: AudioStreamPlayer = $SuccessAudio
+@onready var rocket_audio: AudioStreamPlayer3D = $RocketAudio
+@onready var booster_particles: GPUParticles3D = $BoosterParticles
+@onready var right_booster_particles: GPUParticles3D = $RightBoosterParticles
+@onready var left_booster_particles: GPUParticles3D = $LeftBoosterParticles
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	if Input.is_action_pressed("boost"):
 		apply_central_force(basis.y * delta * thrust)
+		booster_particles.emitting = true
+		if rocket_audio.playing == false:
+			rocket_audio.play()
+	else:
+		rocket_audio.stop()
+		booster_particles.emitting = false
 		
 	if Input.is_action_pressed("rotate_left"):
 		apply_torque(Vector3(0.0, 0.0, torque_thrust * delta))
+		if left_booster_particles.emitting == true:
+			right_booster_particles.emitting = false
+			left_booster_particles.emitting = false
+		else:
+			right_booster_particles.emitting = true
+	else:
+		right_booster_particles.emitting = false
 		
 	if Input.is_action_pressed("rotate_right"):
-			apply_torque(Vector3(0.0, 0.0, -torque_thrust * delta))
+		apply_torque(Vector3(0.0, 0.0, -torque_thrust * delta))
+		if right_booster_particles.emitting == true:
+			left_booster_particles.emitting = false
+			right_booster_particles.emitting = false
+		else:
+			left_booster_particles.emitting = true
+	else:
+		left_booster_particles.emitting = false
 
 func _on_body_entered(body: Node) -> void:
 	if is_transitioning == false:
@@ -30,6 +54,10 @@ func _on_body_entered(body: Node) -> void:
 			crash_sequence()
 
 func crash_sequence() -> void:
+	left_booster_particles.emitting = false
+	right_booster_particles.emitting = false
+	booster_particles.emitting = false
+	rocket_audio.stop()
 	explosion_audio.play()
 	set_process(false)
 	is_transitioning = true
@@ -38,6 +66,10 @@ func crash_sequence() -> void:
 	tween.tween_callback(get_tree().reload_current_scene)
 
 func complete_level(next_level_file: String) -> void:
+	left_booster_particles.emitting = false
+	right_booster_particles.emitting = false
+	booster_particles.emitting = false
+	rocket_audio.stop()
 	success_audio.play()
 	set_process(false)
 	is_transitioning = true
