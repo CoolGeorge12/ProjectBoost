@@ -1,0 +1,51 @@
+[gd_scene load_steps=7 format=3 uid="uid://dcwf8aqy3gmls"]
+
+[ext_resource type="Script" uid="uid://jjg6gdrb6e1u" path="res://Level/LandingPad.gd" id="1_beiql"]
+[ext_resource type="PackedScene" uid="uid://ckudr8chj1kgo" path="res://player.tscn" id="2_dsiwv"]
+[ext_resource type="PackedScene" uid="uid://cxac7qxu2c8y5" path="res://moving_hazard.tscn" id="3_bbx1g"]
+[ext_resource type="PackedScene" uid="uid://bcskxdceg3tpt" path="res://Background.tscn" id="4_3qu6t"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_oi3di"]
+albedo_color = Color(0.3372549, 0.6627451, 0.7882353, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0b4ue"]
+albedo_color = Color(0.08760001, 0.73, 0.23749335, 1)
+
+[node name="Level" type="Node3D"]
+
+[node name="LaunchPad" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, 0.2, 0)
+use_collision = true
+size = Vector3(2, 0.4, 2)
+material = SubResource("StandardMaterial3D_oi3di")
+
+[node name="LandingPad" type="CSGBox3D" parent="." groups=["Goal"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0.2, 0)
+use_collision = true
+size = Vector3(2, 0.4, 2)
+material = SubResource("StandardMaterial3D_0b4ue")
+script = ExtResource("1_beiql")
+file_path = "uid://begqdd10acml3"
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.9781476, 0.2079117, 0, -0.2079117, 0.9781476, 0, 5.817, 9.33)
+
+[node name="Player" parent="." instance=ExtResource("2_dsiwv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, 1.4, 0)
+
+[node name="MovingHazard" parent="." instance=ExtResource("3_bbx1g")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.053667, -5)
+destination = Vector3(0, 0, 5)
+duration = 3.0
+
+[node name="MovingHazard3" parent="." instance=ExtResource("3_bbx1g")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.778328, 5.8170495, -8)
+destination = Vector3(0, 0, 8)
+duration = 3.0
+
+[node name="MovingHazard2" parent="." instance=ExtResource("3_bbx1g")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.6755085, 6.297607, 0)
+destination = Vector3(0, 0, -5)
+duration = 3.0
+
+[node name="Floor" parent="." instance=ExtResource("4_3qu6t")]
